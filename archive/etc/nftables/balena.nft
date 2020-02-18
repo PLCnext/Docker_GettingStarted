@@ -1,0 +1,22 @@
+#!/usr/sbin/nft -f
+define balena_v4 = 172.18.0.0/16
+
+table ip balena {
+  chain balena_forward {
+    # default forward policy is drop
+    type filter hook forward priority 0; policy drop;
+    ip saddr $balena_v4 oif eth0 accept
+    # accept any established connection traffic
+    ct state established,related accept
+  }
+
+  chain prerouting {
+    type nat hook prerouting priority 0;
+  }
+
+  chain postrouting {
+    type nat hook postrouting priority 0;
+    # apply source nat for balena traffic to the internet
+    ip saddr $balena_v4 oif eth0 masquerade
+  }
+}
