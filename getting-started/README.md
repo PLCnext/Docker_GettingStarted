@@ -38,12 +38,12 @@ root@axcf2152:~# ./setup.sh <VERSION>
 Start the balena-engine-daemon manually.
 
 ```bash
-root@axcf2152:/etc/init.d# balena start
+root@axcf2152:~# /etc/init.d/balena start
 ```
 Stop the balena-engine-daemon manually.
 
 ```bash
-root@axcf2152:~# cd /etc/init.d/balena stop
+root@axcf2152:~# /etc/init.d/balena stop
 ```
 
 Open the new terminal and show the status of OCI container
