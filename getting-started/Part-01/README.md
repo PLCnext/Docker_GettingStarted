@@ -10,22 +10,28 @@ In this article, we will install the Balena-engine and start OCI containers.
 
 1. Connect the AXC F 2152 controller to Internet-Provider and Linux OS via LAN-cable.
 2. Start the terminal on Linux OS and establisch the SSH-Connection to PLC via commandline "ssh admin@192.168.1.10".
-3. Change to root via "su -" (root password have to be setup)
-4. Make sure your Internet connection is intact, via command-line "ping 8.8.8.8".
+3. Change to root via "su -" (root password have to be setup [LINK](http://plcnext-infocenter.s3-website.eu-central-1.amazonaws.com/PLCnext_Technology_InfoCenter/PLCnext_Technology_InfoCenter/Operating_System/Root_rights.htm?d_f=false))
+4. Make sure your Internet connection is intact, via command-line `ping 8.8.8.8`.
 
 ### Download the Project to the controller
 
 ```bash
-root@axcf2152:/opt/plcnext/# git clone <MyProject>
-root@axcf2152:/opt/plcnext/# cd <MyProject>
+root@axcf2152:/opt/plcnext/# git clone https://github.com/PLCnext/Docker_GettingStarted.git
+root@axcf2152:/opt/plcnext/# cd Docker_GettingStarted
 ```
 
 ### Install Balena
 
-Setup needs as parameter the `<VERSION>` of Balena to be installed, e.g. `v.18.9.13`.
+To install balena-engine run the `setup.sh`
 
 ```bash
 root@axcf2152:~# chmod +x setup.sh
+root@axcf2152:~# ./setup.sh
+```
+
+The setup has an optional parameter to define the Balena version to be installed, the default parameter is `v17.12.0`.
+
+```bash
 root@axcf2152:~# ./setup.sh <VERSION>
 ```
 
