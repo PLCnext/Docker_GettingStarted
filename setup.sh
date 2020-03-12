@@ -50,8 +50,8 @@ chmod -R 755 ./archive
 cp -a ./archive/etc/init.d/. /etc/init.d/
 cp -a ./archive/etc/balena-engine/. /etc/balena-engine/
 
-groupadd docker
-usermod -a -G docker admin
+groupadd balena
+usermod -a -G balena admin
 
 update-rc.d -s balena defaults
 
