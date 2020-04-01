@@ -52,6 +52,7 @@ cp -a ./archive/etc/balena-engine/. /etc/balena-engine/
 
 groupadd balena
 usermod -a -G balena admin
+chgrp balena /var/run/balena-engine.sock
 
 update-rc.d -s balena defaults
 
