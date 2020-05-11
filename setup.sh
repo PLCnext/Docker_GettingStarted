@@ -49,17 +49,12 @@ chown -R root:root ./archive
 chmod -R 755 ./archive
 cp -a ./archive/etc/init.d/. /etc/init.d/
 cp -a ./archive/etc/balena-engine/. /etc/balena-engine/
-cp -a ./archive/etc/nftables/. /etc/nftables/
 
-wget http://ftp.de.debian.org/debian/pool/main/c/cgroupfs-mount/cgroupfs-mount_1.1_all.deb
-dpkg -i --ignore-depends=mountall cgroupfs-mount_1.1_all.deb
+groupadd balena
+usermod -a -G balena admin
+chgrp balena /var/run/balena-engine.sock
 
-groupadd docker
-usermod -a -G docker admin
-
-update-rc.d -s cgroupfs-mount defaults
 update-rc.d -s balena defaults
-
 
 cat <<EOF
 
