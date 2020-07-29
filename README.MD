@@ -1,41 +1,68 @@
-# PLCnext Technology - Docker and Balena Engine
+# PLCnext Technology compatible container runtimes - Docker, Moby, balenaEngine
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Web](https://img.shields.io/badge/PLCnext-Website-blue.svg)](https://www.phoenixcontact.com/plcnext)
 [![Community](https://img.shields.io/badge/PLCnext-Community-blue.svg)](https://www.plcnext-community.net)
 
-## Guide details
+## Project details
 
 |Description   | Value      |
 |--------------|------------|
 |Created       | 18.02.2020 |
-|Last modified | 18.02.2020 |
-|Controller    | AXC F 2152 |
-|Firmware      | 2020.0 LTS |
+|Last modified | 29.07.2020 |
+|Controller    | ALL        |
+|Firmware      | 2020.6     |
 
 Hardware requirements:
 
-- PLC AXC F 2152 - (Order number 2404267)
+- AXC F 1152
+- AXC F 2152
+- AXC F 3152
 
-Host machine software requirements:
+## Changes for PLCnext firmware 2020.6
 
-- Linux operating system.
+- The command "balena-engine exec -it <container> <execute>"  works now
+- Integrate `iptables-nft` for automatic firewall configuration
+- Publish as APP in [PLCnext Store](https://www.plcnextstore.com/)
+- Added in the Setup Docker as selection for installation
+
+For the difference between Docker and balenaEngine, see [https://www.balena.io/engine/](https://www.balena.io/engine/)
+
+Known bugs:
+
+- If the firewall is activated in WBM or rules are changed here, the container runtime must be restarted.
+
+## Install on Target
+
+```sh
+# Download the Project
+git clone https://github.com/PLCnext/Docker_GettingStarted.git
+
+# Execute Setup.sh in archive
+cd Docker_GettingStarted
+chmod +x setup.sh
+./setup.sh#
+```
 
 ## Introduction
 
 The multi-part tutorial provides an introduction to Balena-Engine an IoT focused Docker like container technology on a PLCnext control.
 
-For more Information about Balena-Engine visit the [website](https://www.balena.io/engine/).
+For more Information about Balena-Engine visit the [website](https://www.balena.io/engine/) and the [GitHub project](https://github.com/balena-os/balena-engine).
+
+## License
+
+[balenaEngine](https://github.com/balena-os/balena-engine/blob/master/README.md), [Moby and Docker](https://github.com/moby/moby/blob/master/README.md) are licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## Roadmap
 
 - With PLCnext Technology **Firmware 2020.0** the AXC controller are **Docker Ready**, this includes a basic set of kernel flags.
 - With Firmware 2020.3 there will follow some advanced settings like additional kernel flags and cgroup mounts.
-- With Firmware 2020.6 it is planned to have balena-engine, a docker compatible container engine, as firmware component implemented.
+- With Firmware 2021.0 it is planned to have balena-engine, a docker compatible container engine, as firmware component implemented.
 
 > The solution for containerization in this tutorial is only for testing and development purposes.
-> With Firmware 2020.6 there will be no more need to install an engine manually and the firmware
-> update could interfere with this solution. Please make sure to backup your images before updating to Firmware 2020.6.
+> With Firmware 2021.0 there will be no more need to install an engine manually and the firmware
+> update could interfere with this solution. Please make sure to backup your images before updating to Firmware 2021.0.
 
 ## Before getting started
 

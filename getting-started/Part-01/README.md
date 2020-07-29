@@ -29,7 +29,7 @@ root@axcf2152:~# chmod +x setup.sh
 root@axcf2152:~# ./setup.sh
 ```
 
-The setup has an optional parameter to define the Balena version to be installed, the default parameter is `v17.12.0`.
+The setup has an optional parameter to define the Balena version to be installed, the default parameter is `v18.9.7`.
 
 ```bash
 root@axcf2152:~# ./setup.sh <VERSION>

@@ -14,17 +14,19 @@ cat /proc/sys/net/ipv4/ip_forward
 echo 1 > /proc/sys/net/ipv4/ip_forward
 ```
 
-## Fix the firewall rule for a different network adapter IP address
+## balenaEngine firewall settings
 
-In the `balena.nft` configuration file used to during the installation step, it may be necessary to change the network address in the line `define balena_v4 = 172.18.0.0/16`
-
-Check the inet addr of your network adapter `balena0` using the command `ip address`, and change the network address to suit. For example, if the `balena0` adapter address is `192.168.0.1`, change the line in `balena.nft` to `define balena_v4 = 192.168.0.0/24` .
-
-## Additional ruleset for PLCnext
+**Not necessary since FW2020.6**
 
 The rules are loaded automatically by Balena during boot and start. Alternatively, the rules can be controlled via `/etc/init.d/balenafw`.
 
 For the automatically loaded ruleset see [archive/nftables/balena.nft](../../archive/etc/nftables/balena.nft)
+
+In the `balena.nft` configuration file used to during the installation step, it may be necessary to change the network address in the line `define balena_v4 = 172.18.1.1/24`
+
+Check the inet addr of your network adapter `balena0` using the command `ip address`, and change the network address to suit. For example, if the `balena0` adapter address is `192.168.0.1` with subnetmask `255.255.255.0`, change the line in `balena.nft` to `define balena_v4 = 192.168.0.0/24` .
+
+## Additional ruleset for PLCnext
 
 If more ports are needed for applications or containers, they can be added to the basic rules in `plcnext-filter`. It is also possible to set the port access via Web based management.
 

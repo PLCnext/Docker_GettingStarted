@@ -1,0 +1,6 @@
+{
+  "data-root": "/media/rfs/rw/var/lib/balena",
+  "storage-driver": "overlay2",
+  "bip": "172.18.1.1/24",
+  "iptables": true
+}
