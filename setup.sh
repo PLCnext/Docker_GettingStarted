@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Read inut from cmd for control
-read -p "
+read -p " Please choose your container runtime:
 Install balenaEngine(recommend): 1
 Install Docker: 2
 " RUNTIME
@@ -95,7 +95,7 @@ EOF
 		  arch="armhf"
 		fi
 		DOCKER_URL="https://download.docker.com/linux/static/stable/${arch}/docker-$VERSION.tgz"
-		curl -sL "$DOCKER_URL" 
+		wget "$DOCKER_URL" 
 		tar xzv -C /usr/bin --strip-components=1 -f docker-$VERSION.tgz
 		rm docker-$VERSION.tgz
 		## Copy configs and add group

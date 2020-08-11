@@ -34,6 +34,22 @@ Known bugs:
 
 ## Install on Target
 
+For installation you need to be root user:
+
+To change to root:
+
+```sh
+su
+```
+
+To set the password from root
+
+```sh
+sudo passwd root
+```
+
+For installation:
+
 ```sh
 # Download the Project
 git clone https://github.com/PLCnext/Docker_GettingStarted.git
@@ -42,6 +58,14 @@ git clone https://github.com/PLCnext/Docker_GettingStarted.git
 cd Docker_GettingStarted
 chmod +x setup.sh
 ./setup.sh#
+```
+
+## Hotfix for FW2020.6
+
+After a restart the firewall rules are set incorrectly. For development purposes, the PLCnext firewall can be removed from the autostart. This is adapted to FW2021.0. 
+
+```sh
+update-rc.d -f firewall remove
 ```
 
 ## Introduction
