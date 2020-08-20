@@ -57,7 +57,7 @@ git clone https://github.com/PLCnext/Docker_GettingStarted.git
 # Execute Setup.sh in archive
 cd Docker_GettingStarted
 chmod +x setup.sh
-./setup.sh#
+./setup.sh
 ```
 
 ## Hotfix for FW2020.6
