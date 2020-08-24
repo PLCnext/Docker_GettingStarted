@@ -102,7 +102,7 @@ In the following series of technical articles, you will install Balena Engine fo
 | --- | ------ | ------ |
 |[01](getting-started/Part-01/README.md)| [Installation](getting-started/Part-01/README.md)| Install the Balena Engine and run the Balena Container on a PLCnext Control.|
 |[02](getting-started/Part-02/README.md)| [Firewall Configuration](getting-started/Part-02/README.md)| How to configure the device firewall for the network access of the container.|
-|| [Explore unlimited possibilities ...](getting-started/Part-99/README.md)| Get ideas for other interesting features you can implement in your own PLCnext datalogger application.|
+|| [Explore unlimited possibilities ...](getting-started/Part-99/README.md)| Get ideas for other interesting features you can implement in your own PLCnext docker application.|
 
 ## How to get support or provide suggestion and ideas
 

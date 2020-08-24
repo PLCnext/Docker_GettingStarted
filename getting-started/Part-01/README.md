@@ -137,7 +137,7 @@ balena-engine run -it -v test:/home/test/ debian bash
 root@axcf2152:~# balena-engine volume ls
 
 # The content of the volume can be inspected via ls on the host system
-root@axcf2152:~# ls /media/rfs/rw/var/lib/docker/volumes/test/_data
+root@axcf2152:~# ls /media/rfs/rw/var/lib/balena/volumes/test/_data
 ```
 
 ### Show all OCI container
