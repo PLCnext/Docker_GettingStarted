@@ -71,6 +71,9 @@ case "$RUNTIME" in
 		cp -a ./archive/balena/usr/. /usr/
 		groupadd balena
 		usermod -a -G balena admin
+		### Add alias for balena-engine
+		echo "alias docker=\"/usr/bin/balena-engine\"" >> /opt/plcnext/.bashrc
+		echo "alias balena=\"/usr/bin/balena-engine\"" >> /opt/plcnext/.bashrc
 		update-rc.d -s balena defaults
 		
 
