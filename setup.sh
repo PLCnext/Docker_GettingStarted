@@ -6,12 +6,12 @@ Install balenaEngine(recommend): 1
 Install Docker: 2
 " RUNTIME
 
-while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.17, Docker 19.03.12): " VERSION; do
+while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.13, Docker 19.03.12): " VERSION; do
     if [ $VERSION ]; then
       break;
     elif [ -z $VERSION ]; then
       if [ $RUNTIME = "1" ]; then 
-	    VERSION="18.9.17"
+	    VERSION="18.9.13"
 		break;
 	  else 
 	    VERSION="19.03.12"
@@ -32,7 +32,7 @@ case "$machine" in
 #		arch="armv6"
 #		;;
 	"armv7"*)
-		arch="armv7"
+		arch="armv7hf"
 		;;
 #	"armv8"*)
 #		arch="aarch64"
@@ -76,6 +76,21 @@ case "$RUNTIME" in
 		echo "alias docker=\"/usr/bin/balena-engine\"" >> /opt/plcnext/.bashrc
 		echo "alias balena=\"/usr/bin/balena-engine\"" >> /opt/plcnext/.bashrc
 		update-rc.d -s balena defaults
+		## Install docker-compose
+		mkdir /usr/local/bin
+		curl -L --fail https://github.com/docker/compose/releases/download/1.27.0/run.sh -o /usr/local/bin/docker-compose
+		sed -i 's/docker.sock/balena-engine.sock/g' /usr/local/bin/docker-compose
+		sed -i 's/exec docker/exec balena-engine/g' /usr/local/bin/docker-compose
+		case "$arch" in 
+			"armv7")
+				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+			;;
+			"armhf")
+				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+			;;
+		esac
+		chgrp balena /usr/local/bin/docker-compose
+		chmod g+x /usr/local/bin/docker-compose
 		
 
 cat <<EOF
@@ -109,6 +124,19 @@ EOF
 		usermod -a -G docker admin
 		usermod -a -G docker plcnext_firmware
 		update-rc.d -s docker defaults
+		## Install docker-compose
+		mkdir /usr/local/bin
+		curl -L --fail https://github.com/docker/compose/releases/download/1.27.0/run.sh -o /usr/local/bin/docker-compose
+		case "$arch" in 
+			"armv7")
+				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+			;;
+			"armhf")
+				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+			;;
+		esac
+		chgrp docker /usr/local/bin/docker-compose
+		chmod g+x /usr/local/bin/docker-compose
 
 cat <<EOF
 		Docker installation successful!
