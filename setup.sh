@@ -14,6 +14,10 @@ Install balenaEngine(recommend): 1
 Install Docker: 2
 " RUNTIME
 
+# Read inut from cmd for control
+read -p " Install docker compose? Type yes/no(default)
+" COMPOSE
+
 ### Version selection removed due to incompatiblity of new versions (systemd is required)
 #while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Docker 19.03.12): " VERSION; do
 #    if [ $VERSION ]; then
@@ -128,6 +132,7 @@ case "$RUNTIME" in
 		echo "alias balena=\"/usr/bin/balena-engine\"" >> /opt/plcnext/.bashrc
 		update-rc.d -s balena defaults
 		## Install docker-compose
+	if [ $COMPOSE = "yes" ]; then
 		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
 		mkdir /usr/local/bin
 		if validate_url $COMPOSE_URL; then	
@@ -151,7 +156,7 @@ case "$RUNTIME" in
  		else
 			echo "Docker-Compose is not installed!"
 		fi		
-
+	fi
 cat <<EOF
 
 
