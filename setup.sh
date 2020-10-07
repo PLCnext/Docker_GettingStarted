@@ -1,15 +1,24 @@
 #!/bin/sh
 
+function validate_url(){
+  if [[ `wget -S --spider $1  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # Read inut from cmd for control
 read -p " Please choose your container runtime:
 Install balenaEngine(recommend): 1
 Install Docker: 2
 " RUNTIME
 
-while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Docker 19.03.8): " VERSION; do
-    if [ $VERSION ]; then
-      break;
-    elif [ -z $VERSION ]; then
+### Version selection removed due to incompatiblity of new versions (systemd is required)
+#while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Docker 19.03.12): " VERSION; do
+#    if [ $VERSION ]; then
+#      break;
+#    elif [ -z $VERSION ]; then
       if [ $RUNTIME = "1" ]; then 
 	    VERSION="18.9.7"
 		break;
@@ -17,8 +26,8 @@ while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Dock
 	    VERSION="19.03.8"
 		break;
       fi
-    fi
-  done
+#    fi
+#  done
 
 # VERSION=$(echo "$VERSION" | sed 's|+|.|g')
 
@@ -61,11 +70,53 @@ chmod -R 755 ./archive
 case "$RUNTIME" in 
 ### Install balenaEngine
    1)
-		### Download and unzip balenaEngine
 		BALENA_URL="https://github.com/balena-os/balena-engine/releases/download/v${VERSION}/balena-engine-v${VERSION}-${arch}.tar.gz"
+		### Check for the available fitting architecture
+		case "$arch" in 
+			"armv7")
+				if validate_url $BALENA_URL; then
+    			# Go on when File exists!
+				break;
+ 				else
+				 	echo "Balena Version is not available for $arch!"
+				 	arch="armv7hf"
+					BALENA_URL="https://github.com/balena-os/balena-engine/releases/download/v${VERSION}/balena-engine-v${VERSION}-${arch}.tar.gz"
+				 	if validate_url $BALENA_URL; then
+    				# Go on when File exists!
+					break;
+ 					else
+					 	echo "Balena Version is not available for $arch!"
+						arch="armhf"
+						BALENA_URL="https://github.com/balena-os/balena-engine/releases/download/v${VERSION}/balena-engine-v${VERSION}-${arch}.tar.gz"
+				 		if validate_url $BALENA_URL; then
+    					# Go on when File exists!
+						break;
+ 						else
+							echo "Balena Version is not available for $arch!"
+							exit 1
+						fi
+					fi
+				fi
+			;;
+			"x86_64")
+				if validate_url $BALENA_URL; then
+    			# Go on when File exists!
+				break;
+ 				else
+				 	echo "Balena Version is not available for $arch!"
+					exit 1
+				fi
+			;;
+		esac
+		### Download and unzip balenaEngine
 		wget "$BALENA_URL"
         tar xzv -C /usr/bin --strip-components=1 -f balena-engine-v${VERSION}-${arch}.tar.gz
 		rm balena-engine-v${VERSION}-${arch}.tar.gz
+		if [-d /usr/bin/balena-engine]; then
+			mv /usr/bin/balena-engine /usr/bin/tmp
+			mv /usr/bin/tmp/* /usr/bin/
+			rmdir /usr/bin/tmp
+		fi
 		#### Copy configs and add group
 		cp -a ./archive/balena/etc/. /etc/
 		cp -a ./archive/balena/usr/. /usr/
@@ -77,22 +128,30 @@ case "$RUNTIME" in
 		echo "alias balena=\"/usr/bin/balena-engine\"" >> /opt/plcnext/.bashrc
 		update-rc.d -s balena defaults
 		## Install docker-compose
-		mkdir /usr/local/bin
-		curl -L --fail https://github.com/docker/compose/releases/download/1.27.0/run.sh -o /usr/local/bin/docker-compose
-		sed -i 's/docker.sock/balena-engine.sock/g' /usr/local/bin/docker-compose
-		sed -i 's/exec docker/exec balena-engine/g' /usr/local/bin/docker-compose
-		case "$arch" in 
-			"armv7")
-				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
-			;;
-			"armhf")
-				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
-			;;
-		esac
-		sed -i 's/$DOCKER_HOST:$DOCKER_HOST/$DOCKER_HOST:\/var\/run\/docker.sock/g' /usr/localbin/docker-compose
-		chgrp balena /usr/local/bin/docker-compose
-		chmod g+x /usr/local/bin/docker-compose
-		
+		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
+		mkdir /usr/local/bin		
+		if validate_url $COMPOSE_URL; then	
+			curl -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
+			sed -i 's/docker.sock/balena-engine.sock/g' /usr/local/bin/docker-compose
+			sed -i 's/exec docker/exec balena-engine/g' /usr/local/bin/docker-compose
+			case "$arch" in 
+				"armv7")
+					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+				;;
+				"armhf")
+					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+				;;
+				"armv7hf")
+					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+				;;
+			esac
+			sed -i 's/$DOCKER_HOST:$DOCKER_HOST/$DOCKER_HOST:\/var\/run\/docker.sock/g' /usr/localbin/docker-compose
+			chgrp balena /usr/local/bin/docker-compose
+			chmod g+x /usr/local/bin/docker-compose
+			break;
+ 		else
+			echo "Docker-Compose is not installed!"
+		fi		
 
 cat <<EOF
 
@@ -115,7 +174,28 @@ EOF
 		  arch="armhf"
 		fi
 		DOCKER_URL="https://download.docker.com/linux/static/stable/${arch}/docker-$VERSION.tgz"
-		wget "$DOCKER_URL" 
+		### Check for the available fitting architecture
+		case "$arch" in 
+			"armhf")
+				if validate_url $DOCKER_URL; then
+    			# Go on when File exists!
+				break;
+ 				else
+					echo "Docker Version is not available for $arch!"
+					exit 1
+				fi
+			;;
+			"x86_64")
+				if validate_url $DOCKER_URL; then
+    			# Go on when File exists!
+				break;
+ 				else
+				 	echo "Docker Version is not available for $arch!"
+					exit 1
+				fi
+			;;
+		esac
+		wget "$DOCKER_URL"
 		tar xzv -C /usr/bin --strip-components=1 -f docker-$VERSION.tgz
 		rm docker-$VERSION.tgz
 		## Copy configs and add group
@@ -127,47 +207,23 @@ EOF
 		update-rc.d -s docker defaults
 		## Install docker-compose
 		mkdir /usr/local/bin
-		curl -L --fail https://github.com/docker/compose/releases/download/1.27.0/run.sh -o /usr/local/bin/docker-compose
-		case "$arch" in 
-			"armv7")
-				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
-			;;
-			"armhf")
-				sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
-			;;
-		esac
-		chgrp docker /usr/local/bin/docker-compose
-		chmod g+x /usr/local/bin/docker-compose
+		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
+		if validate_url $COMPOSE_URL; then
+			curl -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
+			case "$arch" in
+				"armhf")
+					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+				;;
+			esac
+			chgrp docker /usr/local/bin/docker-compose
+			chmod g+x /usr/local/bin/docker-compose
+			break;
+		else
+			echo "Docker-Compose is not installed!"
+		fi
 
 cat <<EOF
 		Docker installation successful!
 EOF
 		;;
 esac
-
-### copy iptables  
-
-case "$arch" in 
-	"armv7")
-		cp -a ./archive/iptables/armv7/usr/. /usr/
-	;;
-	"armhf")
-		cp -a ./archive/iptables/armv7/usr/. /usr/
-	;;
-	"x86_64")
-		cp -a ./archive/iptables/x86_64/usr/. /usr/
-	;;
-esac
-
-### create symlinks for iptables
-ln -s /usr/sbin/xtables-nft-multi /usr/sbin/iptables
-ln -s /usr/sbin/xtables-nft-multi /usr/sbin/arptables
-ln -s /usr/sbin/xtables-nft-multi /usr/sbin/ip6tables
-ln -s /usr/sbin/xtables-nft-multi /usr/sbin/ebtables
-ln -s /usr/lib/libip4tc.so.2.0.0 /usr/lib/libip4tc.so.2
-ln -s /usr/lib/libip6tc.so.2.0.0 /usr/lib/libip6tc.so.2
-ln -s /usr/lib/libxtables.so.12.2.0 /usr/lib/libxtables.so.12
-
-cat <<EOF
-		Ready - It is time for container :). 
-EOF
