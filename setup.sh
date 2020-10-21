@@ -116,7 +116,7 @@ case "$RUNTIME" in
 		wget "$BALENA_URL"
         tar xzv -C /usr/bin --strip-components=1 -f balena-engine-v${VERSION}-${arch}.tar.gz
 		rm balena-engine-v${VERSION}-${arch}.tar.gz
-		if [-d /usr/bin/balena-engine]; then
+		if [ -d /usr/bin/balena-engine ]; then
 			mv /usr/bin/balena-engine /usr/bin/tmp
 			mv /usr/bin/tmp/* /usr/bin/
 			rmdir /usr/bin/tmp
@@ -211,22 +211,29 @@ EOF
 		usermod -a -G docker plcnext_firmware
 		update-rc.d -s docker defaults
 		## Install docker-compose
-		mkdir /usr/local/bin
-		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
-		if validate_url $COMPOSE_URL; then
-			curl -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
-			case "$arch" in
-				"armhf")
-					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
-				;;
-			esac
-			chgrp docker /usr/local/bin/docker-compose
-			chmod g+x /usr/local/bin/docker-compose
-			break;
-		else
-			echo "Docker-Compose is not installed!"
+		if [ $COMPOSE = "yes" ]; then
+			COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
+			mkdir /usr/local/bin
+			if validate_url $COMPOSE_URL; then	
+				curl -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
+				case "$arch" in 
+					"armv7")
+						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+					;;
+					"armhf")
+						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+					;;
+					"armv7hf")
+						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+					;;
+				esac
+				chgrp docker /usr/local/bin/docker-compose
+				chmod g+x /usr/local/bin/docker-compose
+				break;
+			else
+				echo "Docker-Compose is not installed!"
+			fi		
 		fi
-
 cat <<EOF
 		Docker installation successful!
 EOF
