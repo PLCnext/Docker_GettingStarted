@@ -9,7 +9,7 @@
 |Description   | Value      |
 |--------------|------------|
 |Created       | 18.02.2020 |
-|Last modified | 29.07.2020 |
+|Last modified | 21.10.2020 |
 |Controller    | ALL        |
 |Firmware      | 2020.6     |
 
@@ -25,12 +25,15 @@ Hardware requirements:
 - Integrate `iptables-nft` for automatic firewall configuration
 - Publish as APP in [PLCnext Store](https://www.plcnextstore.com/)
 - Added in the Setup Docker as selection for installation
+- Added Docker-Compose
 
 For the difference between Docker and balenaEngine, see [https://www.balena.io/engine/](https://www.balena.io/engine/)
 
 Known bugs:
 
 - If the firewall is activated in WBM or rules are changed here, the container runtime must be restarted.
+- Docker-Compose does not work if the compose file is located directly in */opt/plcnext/*
+- Factory reset does not remove application images and cache.
 
 ## Install on Target
 
@@ -62,10 +65,18 @@ chmod +x setup.sh
 
 ## Hotfix for FW2020.6
 
-After a restart the firewall rules are set incorrectly. For development purposes, the PLCnext firewall can be removed from the autostart. This is adapted to FW2021.0. 
+After a restart the firewall rules are set incorrectly. For development purposes, the PLCnext firewall can be removed from the autostart. This is adapted in Firmware 2021.0 LTS. 
 
 ```sh
 update-rc.d -f firewall remove
+```
+
+## Workaround to fully remove images and cache before/after firmware reset
+
+Login to the terminal, change to root and remove the folder manually
+
+```sh
+rm -rf /media/rfs/rw/var/lib/balena
 ```
 
 ## Introduction
@@ -82,11 +93,10 @@ For more Information about Balena-Engine visit the [website](https://www.balena.
 
 - With PLCnext Technology **Firmware 2020.0** the AXC controller are **Docker Ready**, this includes a basic set of kernel flags.
 - With Firmware 2020.3 there will follow some advanced settings like additional kernel flags and cgroup mounts.
-- With Firmware 2021.0 it is planned to have balena-engine, a docker compatible container engine, as firmware component implemented.
+- With Firmware 2021.0 xtables will be part of the image
 
 > The solution for containerization in this tutorial is only for testing and development purposes.
-> With Firmware 2021.0 there will be no more need to install an engine manually and the firmware
-> update could interfere with this solution. Please make sure to backup your images before updating to Firmware 2021.0.
+> update could interfere with this solution. Please make sure to backup your images before updating to a new Firmware.
 
 ## Before getting started
 

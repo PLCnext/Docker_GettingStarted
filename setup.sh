@@ -6,7 +6,7 @@ Install balenaEngine(recommend): 1
 Install Docker: 2
 " RUNTIME
 
-while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Docker 19.03.12): " VERSION; do
+while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Docker 19.03.8): " VERSION; do
     if [ $VERSION ]; then
       break;
     elif [ -z $VERSION ]; then
@@ -14,7 +14,7 @@ while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Dock
 	    VERSION="18.9.7"
 		break;
 	  else 
-	    VERSION="19.03.12"
+	    VERSION="19.03.8"
 		break;
       fi
     fi
