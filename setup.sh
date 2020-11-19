@@ -150,7 +150,7 @@ case "$RUNTIME" in
 					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
 				;;
 			esac
-			sed -i 's/$DOCKER_HOST:$DOCKER_HOST/$DOCKER_HOST:\/var\/run\/docker.sock/g' /usr/localbin/docker-compose
+			sed -i 's/$DOCKER_HOST:$DOCKER_HOST/$DOCKER_HOST:\/var\/run\/docker.sock/g' /usr/local/bin/docker-compose
 			chgrp balena /usr/local/bin/docker-compose
 			chmod g+x /usr/local/bin/docker-compose
 			break;
