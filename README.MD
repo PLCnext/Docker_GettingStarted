@@ -32,7 +32,6 @@ For the difference between Docker and balenaEngine, see [https://www.balena.io/e
 Known bugs:
 
 - If the firewall is activated in WBM or rules are changed here, the container runtime must be restarted.
-- Docker-Compose does not work if the compose file is located directly in */opt/plcnext/*
 - Factory reset does not remove application images and cache.
 
 ## Install on Target
