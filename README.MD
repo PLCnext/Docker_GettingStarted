@@ -9,30 +9,45 @@
 |Description   | Value      |
 |--------------|------------|
 |Created       | 18.02.2020 |
-|Last modified | 21.10.2020 |
-|Controller    | ALL        |
-|Firmware      | 2020.6     |
+|Last modified | 19.11.2020 |
+|Controller    | AXC F 1152; AXC F 2152; AXC F 3152 |
+|Firmware      | 2021.0 LTS |
 
-Hardware requirements:
+## Changes for PLCnext firmware 2021.0 LTS
 
-- AXC F 1152
-- AXC F 2152
-- AXC F 3152
-
-## Changes for PLCnext firmware 2020.6
-
-- The command "balena-engine exec -it <container> <execute>"  works now
-- Integrate `iptables-nft` for automatic firewall configuration
+- `iptables-nft` is now part of the FW image
 - Publish as APP in [PLCnext Store](https://www.plcnextstore.com/)
-- Added in the Setup Docker as selection for installation
-- Added Docker-Compose
+- Added docker as installation option
+- Removed the version selection (only the default versions of balena and docker are stable)
+- Fixed docker-dompose
+- Fixed issue with the PLCnext firewall and WBM
 
 For the difference between Docker and balenaEngine, see [https://www.balena.io/engine/](https://www.balena.io/engine/)
 
-Known bugs:
+**Known issues:**
 
-- If the firewall is activated in WBM or rules are changed here, the container runtime must be restarted.
 - Factory reset does not remove application images and cache.
+
+## Workaround to fully remove images and cache before/after firmware reset
+
+Login to the terminal, change to root and remove the folder manually
+
+```sh
+rm -rf /media/rfs/rw/var/lib/balena
+```
+## How to get support or provide suggestion and ideas
+
+You can get support or provide suggestion and ideas in the forum of the [PLCnext Community](www.plcnext-community.net).
+
+## License
+
+[balenaEngine](https://github.com/balena-os/balena-engine/blob/master/README.md), [Moby and Docker](https://github.com/moby/moby/blob/master/README.md) are licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+## Introduction
+
+The following chapters provides an introduction and first steps with Balena-Engine an IoT focused Docker like container technology on a PLCnext control.
+
+For more Information about Balena-Engine visit the [website](https://www.balena.io/engine/) and the [GitHub project](https://github.com/balena-os/balena-engine).
 
 ## Install on Target
 
@@ -62,60 +77,149 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-## Hotfix for FW2020.6
+## Work with containers
 
-After a restart the firewall rules are set incorrectly. For development purposes, the PLCnext firewall can be removed from the autostart. This is adapted in Firmware 2021.0 LTS. 
+All OCI compatible images can be used in combination with balena, especially docker images.  
+For images see: https://hub.docker.com/
 
-```sh
-update-rc.d -f firewall remove
+> Internet connection is required!
+
+### Download an image to the controller
+
+`Pull` loads an image from a repository and stores it locally. if no complete domain is given, the images on https://hub.docker.com/ are searched automatically.
+
+```bash
+root@axcf2152:~# balena-engine pull armhf/debian
 ```
 
-## Workaround to fully remove images and cache before/after firmware reset
+### Start an image on the controller
 
-Login to the terminal, change to root and remove the folder manually
+`Start` creates a container from an image available on the local computer
 
-```sh
-rm -rf /media/rfs/rw/var/lib/balena
+```bash
+root@axcf2152:~# balena-engine start armhf/debian
 ```
 
-## Introduction
+### Run an image
 
-The multi-part tutorial provides an introduction to Balena-Engine an IoT focused Docker like container technology on a PLCnext control.
+The `run` command combines `pull` and `start`
 
-For more Information about Balena-Engine visit the [website](https://www.balena.io/engine/) and the [GitHub project](https://github.com/balena-os/balena-engine).
+```bash
+root@axcf2152:~# balena-engine run armhf/debian
+```
 
-## License
+### Start an image and get access into the container
 
-[balenaEngine](https://github.com/balena-os/balena-engine/blob/master/README.md), [Moby and Docker](https://github.com/moby/moby/blob/master/README.md) are licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+The command `-it` (interactive with tty) creates a new process in a container. The entry point must also be specified. In the example `/bin/bash`
 
-## Roadmap
+```bash
+root@axcf2152:~# balena-engine run -it debian /bin/bash
+# Result: If a container is successfully started
+root@9bc6dd4527e0:/#
+```
 
-- With PLCnext Technology **Firmware 2020.0** the AXC controller are **Docker Ready**, this includes a basic set of kernel flags.
-- With Firmware 2020.3 there will follow some advanced settings like additional kernel flags and cgroup mounts.
-- With Firmware 2021.0 xtables will be part of the image
+### Test the internet access inside docker container
 
-> The solution for containerization in this tutorial is only for testing and development purposes.
-> update could interfere with this solution. Please make sure to backup your images before updating to a new Firmware.
+```bash
+root@9bc6dd4527e0:/# ping 8.8.8.8
+# Result:
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=55 time=14.6 ms
+```
 
-## Before getting started
+### Exit the running container
 
-Please note that the introduction in this series of articles uses:
+When closing and restarting containers the runtime data (data that is not part of the image) is lost. If this data is to be retained, it must be stored persistently. See volumes.
 
-- Internet-Connection
+```bash
+root@9bc6dd4527e0:/# exit
+# Result:
+root@axcf2152:~#
+```
 
-## Getting Started
+### Working with Volumes
 
-In the following series of technical articles, you will install Balena Engine for PLCnext Control and run [OCI container](https://www.opencontainers.org/) on a PLCnext Control.
+Mounting host volumes into the container and test it. A host volume is one way to persist data from a container.
 
-|\#| Topic | Objectives |
-| --- | ------ | ------ |
-|[01](getting-started/Part-01/README.md)| [Installation](getting-started/Part-01/README.md)| Install the Balena Engine and run the Balena Container on a PLCnext Control.|
-|[02](getting-started/Part-02/README.md)| [Firewall Configuration](getting-started/Part-02/README.md)| How to configure the device firewall for the network access of the container.|
-|| [Explore unlimited possibilities ...](getting-started/Part-99/README.md)| Get ideas for other interesting features you can implement in your own PLCnext docker application.|
+```bash
+# Create a project folder on the host e.g. /opt/plcnext/test and mount it in the container as /home/test/
+root@axcf2152:~# mkdir /opt/plcnext/test
+root@axcf2152:~# balena-engine run -it -v /opt/plcnext/test:/home/test/ debian bash
+```
 
-## How to get support or provide suggestion and ideas
+Alternative to host volumes, you can use container volumes on your host.
+There are also other methods to persistently store data from containers, for which various drivers are provided. Besides volumes and folders, central network storage, such as NFS, is often used.
 
-You can get support or provide suggestion and ideas in the forum of the [PLCnext Community](www.plcnext-community.net).
+```bash
+# For use a container volume you need a name instead of directory. Example:
+balena-engine run -it -v test:/home/test/ debian bash
+# will be create a volume.
+
+# The volumes can be viewed by:
+root@axcf2152:~# balena-engine volume ls
+
+# The content of the volume can be inspected via ls on the host system
+root@axcf2152:~# ls /media/rfs/rw/var/lib/balena/volumes/test/_data
+```
+
+### Show all OCI container
+
+You can see an example output on the console.
+
+```bash
+root@axcf2152:~# balena-engine ps -a
+Result:
+CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS                       PORTS                                            NAMES
+4401cdaf0fee        armhf/debian          "bash"                   7 minutes ago       Exited (130) 8 seconds ago                                                    cranky_mayer
+df194ad3f89d        debian                "bash"                   22 minutes ago      Exited (0) 21 minutes ago                                                     agitated_austin
+092fe03508aa        nginx                 "nginx -g 'daemon of…"   33 minutes ago      Exited (0) 31 minutes ago                                                     magical_antonelli
+0dd0b4d84759        registry:2            "/entrypoint.sh /etc…"   About an hour ago   Up About an hour             5000/tcp, 0.0.0.0:5000->5000/tcp                 registry_name
+2c71de9f0555        portainer/portainer   "/portainer"             About an hour ago   Up About an hour             0.0.0.0:18000->8000/tcp, 0.0.0.0:19000->9000/tcp frosty_mclean
+```
+
+### Remove container
+
+You can see an example output on the console.
+
+```bash
+root@axcf2152:~# balena-engine rm 44 (a part of ID-Number: 4401cdaf0fee)
+root@axcf2152:~# balena-engine ps -a
+Result:
+CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS                       PORTS                                            NAMES
+df194ad3f89d        debian                "bash"                   22 minutes ago      Exited (0) 21 minutes ago                                                     agitated_austin
+092fe03508aa        nginx                 "nginx -g 'daemon of…"   33 minutes ago      Exited (0) 31 minutes ago                                                     magical_antonelli
+0dd0b4d84759        registry:2            "/entrypoint.sh /etc…"   About an hour ago   Up About an hour             5000/tcp, 0.0.0.0:5000->5000/tcp                 registry_name
+2c71de9f0555        portainer/portainer   "/portainer"             About an hour ago   Up About an hour             0.0.0.0:18000->8000/tcp, 0.0.0.0:19000->9000/tcp frosty_mclean
+```
+
+## Examples
+
+Examples of interesting projects.
+
+### Run a local registry
+
+See following Usecase: https://docs.docker.com/registry/deploying/
+
+```bash
+root@axcf2152:~# balena-engine run -d -p 5000:5000 --name registry_name registry:2
+```
+
+### Run a local webserver nginx
+
+Find more information under: https://hub.docker.com/_/nginx
+
+```bash
+root@axcf2152:~# balena-engine run -d nginx
+```
+
+### Deploy and start Portainer (user interface for container runtimes)
+
+See Portainer Quick-Start: https://portainer.readthedocs.io/en/stable/deployment.html#quick-start  
+Result: Open Webbrowser and login into Portainer Docker-Management-Tool (http://192.168.1.10:9000/#/home)
+
+```bash
+balena-engine run -d -p 8000:8000 -p 9000:9000 -v /var/run/balena-engine.sock:/var/run/balena-engine.sock -v portainer_data_name:/data portainer/portainer
+```
 
 ## License
 
