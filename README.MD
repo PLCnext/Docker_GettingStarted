@@ -27,14 +27,28 @@ For the difference between Docker and balenaEngine, see [https://www.balena.io/e
 **Known issues:**
 
 - Factory reset does not remove application images and cache.
+- server certificate verification failed due to an incorrect system time
 
-## Workaround to fully remove images and cache before/after firmware reset
+## Workarounds
+
+## Fully remove images and cache before/after firmware reset
 
 Login to the terminal, change to root and remove the folder manually
 
 ```sh
 rm -rf /media/rfs/rw/var/lib/balena
 ```
+
+## Set the system time
+
+Login to the terminal and set the system clock to the correct time.
+
+```sh
+sudo date -s "YYYY-MM-DD hh:mm:ss"
+```
+
+More information on the topic system time can be found [here](https://www.plcnext.help/te/Operating_System/System_time.htm?rhhlterm=system%20time&rhsearch=system%20time) in the PLCnext Info Center.
+
 ## How to get support or provide suggestion and ideas
 
 You can get support or provide suggestion and ideas in the forum of the [PLCnext Community](www.plcnext-community.net).
