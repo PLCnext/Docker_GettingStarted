@@ -74,6 +74,7 @@ chmod -R 755 ./archive
 case "$RUNTIME" in 
 ### Install balenaEngine
    1)
+		echo "Starting Balena installation..."
 		BALENA_URL="https://github.com/balena-os/balena-engine/releases/download/v${VERSION}/balena-engine-v${VERSION}-${arch}.tar.gz"
 		### Check for the available fitting architecture
 		case "$arch" in 
@@ -133,6 +134,7 @@ case "$RUNTIME" in
 		update-rc.d -s balena defaults
 		## Install docker-compose
 	if [ $COMPOSE = "yes" ]; then
+		echo "Starting docker-compose installation for Balena..."
 		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
 		mkdir /usr/local/bin		
 		if validate_url $COMPOSE_URL; then	
@@ -174,6 +176,7 @@ EOF
 	;;
    
    2)
+		echo "Starting Docker installation..."
 		### Download Docker
 		if [ $arch = "armv7" ]; then
 		  arch="armhf"
@@ -212,6 +215,7 @@ EOF
 		update-rc.d -s docker defaults
 		## Install docker-compose
 		if [ $COMPOSE = "yes" ]; then
+			echo "Starting docker-compose installation..."
 			COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
 			mkdir /usr/local/bin
 			if validate_url $COMPOSE_URL; then	
