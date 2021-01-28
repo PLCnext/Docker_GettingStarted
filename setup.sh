@@ -9,14 +9,31 @@ function validate_url(){
 }
 
 # Read inut from cmd for control
-read -p " Please choose your container runtime:
+while true; do
+        read -p " Please choose your container runtime:
 Install balenaEngine(recommend): 1
 Install Docker: 2
+Cancel installation: [C]ancel
 " RUNTIME
+        case $RUNTIME in
+                [1] ) break;;
+                [2] ) break;;
+                [Cc]* ) exit;;
+                * ) echo "Please choose a valid value (1 or 2) or cancel the installation.";;
+        esac
+done
 
 # Read inut from cmd for control
-read -p " Install docker compose? Type yes/no(default)
-" COMPOSE
+while true; do
+	read -p " Do you wish to install docker-compose?
+ " COMPOSE
+	    case $COMPOSE in
+                [Yy] ) COMPOSE=yes; break;;
+                [Nn] ) COMPOSE=no; break;;
+                [Cc]* ) exit;;
+                * ) echo "Please answer yes/no or [c]ancel the installation.";;
+        esac
+done
 
 ### Version selection removed due to incompatiblity of new versions (systemd is required)
 #while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Docker 19.03.12): " VERSION; do
