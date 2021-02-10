@@ -28,8 +28,8 @@ while true; do
 	read -p " Do you wish to install docker-compose?
  " COMPOSE
 	    case $COMPOSE in
-                [Yy] ) COMPOSE=yes; break;;
-                [Nn] ) COMPOSE=no; break;;
+                [Yy]* ) COMPOSE=yes; break;;
+                [Nn]* ) COMPOSE=no; break;;
                 [Cc]* ) exit;;
                 * ) echo "Please answer yes/no or [c]ancel the installation.";;
         esac
@@ -155,7 +155,7 @@ case "$RUNTIME" in
 		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
 		mkdir /usr/local/bin		
 		if validate_url $COMPOSE_URL; then	
-			curl -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
+			curl --insecure -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
 			sed -i 's/docker.sock/balena-engine.sock/g' /usr/local/bin/docker-compose
 			sed -i 's/exec docker/exec balena-engine/g' /usr/local/bin/docker-compose
 			case "$arch" in 
@@ -236,7 +236,7 @@ EOF
 			COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
 			mkdir /usr/local/bin
 			if validate_url $COMPOSE_URL; then	
-				curl -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
+				curl --insecure -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
 				case "$arch" in 
 					"armv7")
 						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
