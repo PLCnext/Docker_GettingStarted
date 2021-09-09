@@ -152,26 +152,26 @@ case "$RUNTIME" in
 		## Install docker-compose
 	if [ $COMPOSE = "yes" ]; then
 		echo "Starting docker-compose installation for Balena..."
-		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
-		mkdir /usr/local/bin		
+		COMPOSE_URL="https://github.com/docker/compose/releases/download/1.29.2/run.sh"
+		mkdir /usr/bin		
 		if validate_url $COMPOSE_URL; then	
-			curl --insecure -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
-			sed -i 's/docker.sock/balena-engine.sock/g' /usr/local/bin/docker-compose
-			sed -i 's/exec docker/exec balena-engine/g' /usr/local/bin/docker-compose
+			curl --insecure -L --fail $COMPOSE_URL -o /usr/bin/docker-compose
+			sed -i 's/docker.sock/balena-engine.sock/g' /usr/bin/docker-compose
+			sed -i 's/exec docker/exec balena-engine/g' /usr/bin/docker-compose
 			case "$arch" in 
 				"armv7")
-					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
 				;;
 				"armhf")
-					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
 				;;
 				"armv7hf")
-					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+					sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
 				;;
 			esac
-			sed -i 's/$DOCKER_HOST:$DOCKER_HOST/$DOCKER_HOST:\/var\/run\/docker.sock/g' /usr/local/bin/docker-compose
-			chgrp balena /usr/local/bin/docker-compose
-			chmod g+x /usr/local/bin/docker-compose
+			sed -i 's/$DOCKER_HOST:$DOCKER_HOST/$DOCKER_HOST:\/var\/run\/docker.sock/g' /usr/bin/docker-compose
+			chgrp balena /usr/bin/docker-compose
+			chmod g+x /usr/bin/docker-compose
 			break;
  		else
 			echo "Docker-Compose is not installed!"
@@ -233,23 +233,23 @@ EOF
 		## Install docker-compose
 		if [ $COMPOSE = "yes" ]; then
 			echo "Starting docker-compose installation..."
-			COMPOSE_URL="https://github.com/docker/compose/releases/download/1.27.0/run.sh"
-			mkdir /usr/local/bin
+			COMPOSE_URL="https://github.com/docker/compose/releases/download/1.29.2/run.sh"
+			mkdir /usr/bin
 			if validate_url $COMPOSE_URL; then	
-				curl --insecure -L --fail $COMPOSE_URL -o /usr/local/bin/docker-compose
+				curl --insecure -L --fail $COMPOSE_URL -o /usr/bin/docker-compose
 				case "$arch" in 
 					"armv7")
-						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
 					;;
 					"armhf")
-						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
 					;;
 					"armv7hf")
-						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/local/bin/docker-compose
+						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
 					;;
 				esac
-				chgrp docker /usr/local/bin/docker-compose
-				chmod g+x /usr/local/bin/docker-compose
+				chgrp docker /usr/bin/docker-compose
+				chmod g+x /usr/bin/docker-compose
 				break;
 			else
 				echo "Docker-Compose is not installed!"
