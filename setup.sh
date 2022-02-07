@@ -1,6 +1,6 @@
 #!/bin/sh
 
-function validate_url(){
+function validate_url() {
   if [[ `wget -S --spider $1  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
     return 0
   else
@@ -9,25 +9,30 @@ function validate_url(){
 }
 
 function print_usage() {
-  echo "Usage: "$execution_name" [balena-engine = 0 || docker = 1] [docker-compose = yes | no]"; exit 1;;
+  echo "Usage: "$execution_name" [balena-engine = 0 || docker = 1] [docker-compose = yes | no]";
+  exit 1
 }
 
 ##### Main Program #####
 execution_name=$0;
 
-if [ $# -ge 2 ]; then
-        echo "error: wrong number of arguments" >&2;;
-		print_usage();;
+if [ $# -ge 3 ]; then
+        echo "error: wrong number of arguments" >&2;
+		print_usage;
 fi
 
 if [ $# -eq 2 ]; then
 # Read input from arguments
 	    re='^[0-9]+$'
-	    if ! [[ $1 =~ $re ]] ; then
-	      echo "error: wrong arguments" >&2; print_usage;;
+	    if ! [[ $1 =~ $re && $1 -lt 3 && $1 -gt 0 ]] ; then
+	      echo "error in runtime argument" >&2; print_usage;
 		else
-	      RUNTIME=$1;;
-	      COMPOSE=$2;;
+	      RUNTIME=$1;
+		fi
+		if ! [[ $2 == "yes" || $2 == "no" ]]; then
+	      echo "error in docker-compose argument" >&2; print_usage;
+		else
+	      COMPOSE=$2;
 	    fi
 else
 # Read inut from cmd for control
