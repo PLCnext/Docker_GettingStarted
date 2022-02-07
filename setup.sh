@@ -9,7 +9,7 @@ function validate_url() {
 }
 
 function print_usage() {
-  echo "Usage: "$execution_name" [balena-engine = 0 || docker = 1] [docker-compose = yes | no]";
+  echo "Usage: "$execution_name" [balena-engine = 1 || docker = 2] [docker-compose = yes | no]";
   exit 1
 }
 
