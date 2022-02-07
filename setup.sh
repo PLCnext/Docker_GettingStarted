@@ -8,32 +8,55 @@ function validate_url(){
   fi
 }
 
-# Read inut from cmd for control
-while true; do
-        read -p " Please choose your container runtime:
-Install balenaEngine(recommend): 1
-Install Docker: 2
-Cancel installation: [C]ancel
-" RUNTIME
-        case $RUNTIME in
-                [1] ) break;;
-                [2] ) break;;
-                [Cc]* ) exit;;
-                * ) echo "Please choose a valid value (1 or 2) or cancel the installation.";;
-        esac
-done
+function print_usage() {
+  echo "Usage: "$execution_name" [balena-engine = 0 || docker = 1] [docker-compose = yes | no]"; exit 1;;
+}
 
+##### Main Program #####
+execution_name=$0;
+
+if [ $# -ge 2 ]; then
+        echo "error: wrong number of arguments" >&2;;
+		print_usage();;
+fi
+
+if [ $# -eq 2 ]; then
+# Read input from arguments
+	    re='^[0-9]+$'
+	    if ! [[ $1 =~ $re ]] ; then
+	      echo "error: wrong arguments" >&2; print_usage;;
+		else
+	      RUNTIME=$1;;
+	      COMPOSE=$2;;
+	    fi
+else
 # Read inut from cmd for control
-while true; do
-	read -p " Do you wish to install docker-compose?
- " COMPOSE
-	    case $COMPOSE in
-                [Yy]* ) COMPOSE=yes; break;;
-                [Nn]* ) COMPOSE=no; break;;
-                [Cc]* ) exit;;
-                * ) echo "Please answer yes/no or [c]ancel the installation.";;
-        esac
-done
+	  while true; do
+				read -p " Please choose your container runtime:
+	  Install balenaEngine(recommend): 1
+	  Install Docker: 2
+	  Cancel installation: [C]ancel
+	  " RUNTIME
+				case $RUNTIME in
+						[1] ) break;;
+						[2] ) break;;
+						[Cc]* ) exit;;
+						* ) echo "Please choose a valid value (1 or 2) or cancel the installation.";;
+				esac
+	  done
+
+	  # Read inut from cmd for control
+	  while true; do
+	  	read -p " Do you wish to install docker-compose?
+	   " COMPOSE
+	  	    case $COMPOSE in
+	                  [Yy]* ) COMPOSE=yes; break;;
+	                  [Nn]* ) COMPOSE=no; break;;
+	                  [Cc]* ) exit;;
+	                  * ) echo "Please answer yes/no or [c]ancel the installation.";;
+	          esac
+	  done
+fi
 
 ### Version selection removed due to incompatiblity of new versions (systemd is required)
 #while read -p "Version xx.xx.xx (let empty for default balenaEngine 18.9.7, Docker 19.03.12): " VERSION; do
