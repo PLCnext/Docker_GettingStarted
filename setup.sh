@@ -35,7 +35,7 @@ if [ $# -eq 2 ]; then
 	      COMPOSE=$2;
 	    fi
 else
-# Read inut from cmd for control
+# Read input from cmd for control
 	  while true; do
 				read -p " Please choose your container runtime:
 	  Install balenaEngine(recommend): 1
@@ -50,7 +50,7 @@ else
 				esac
 	  done
 
-	  # Read inut from cmd for control
+	  # Read input from cmd for control
 	  while true; do
 	  	read -p " Do you wish to install docker-compose?
 	   " COMPOSE
@@ -261,27 +261,36 @@ EOF
 		## Install docker-compose
 		if [ $COMPOSE = "yes" ]; then
 			echo "Starting docker-compose installation..."
-			COMPOSE_URL="https://github.com/docker/compose/releases/download/1.29.2/run.sh"
+			
+			if [ $arch == "x86_64" ]; then
+				COMPOSE_URL="https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64"
+			else
+				COMPOSE_URL="https://github.com/docker/compose/releases/download/1.29.2/run.sh"
+			fi
+			
 			mkdir /usr/bin
 			if validate_url $COMPOSE_URL; then	
 				curl --insecure -L --fail $COMPOSE_URL -o /usr/bin/docker-compose
-				case "$arch" in 
-					"armv7")
-						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
-					;;
-					"armhf")
-						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
-					;;
-					"armv7hf")
-						sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
-					;;
-				esac
+				
+				if [ $arch != "x86_64" ]; then
+					case "$arch" in 
+						"armv7")
+							sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
+						;;
+						"armhf")
+							sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
+						;;
+						"armv7hf")
+							sed -i 's/docker\/compose/apptower\/docker-compose/g' /usr/bin/docker-compose
+						;;
+					esac
+				fi
 				chgrp docker /usr/bin/docker-compose
 				chmod g+x /usr/bin/docker-compose
 				break;
 			else
 				echo "Docker-Compose is not installed!"
-			fi		
+			fi
 		fi
 cat <<EOF
 		Docker installation successful!
