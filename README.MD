@@ -87,7 +87,7 @@ More information on the topic system time can be found [here](https://www.plcnex
 
 ## How to get support or provide suggestion and ideas
 
-You can get support or provide suggestion and ideas in the forum of the [PLCnext Community](www.plcnext-community.net).
+You can get support or provide suggestion and ideas in the forum of the [PLCnext Community](https://www.plcnext-community.net).
 
 ## Work with containers
 
