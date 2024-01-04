@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function validate_url(){
-  if [[ `wget -S --spider $1  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+  if [[ `curl --insecure -L --fail -I -s $1 2>&1 | grep 'HTTP/1.1 302 Found'` ]]; then
     return 0
   else
     return 1
@@ -131,7 +131,7 @@ case "$RUNTIME" in
 			;;
 		esac
 		### Download and unzip balenaEngine
-		wget "$BALENA_URL"
+		curl --insecure -L --fail "$BALENA_URL" -o ./balena-engine-v${VERSION}-${arch}.tar.gz
         tar xzv -C /usr/bin --strip-components=1 -f balena-engine-v${VERSION}-${arch}.tar.gz
 		rm balena-engine-v${VERSION}-${arch}.tar.gz
 		if [ -d /usr/bin/balena-engine ]; then
