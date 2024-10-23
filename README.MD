@@ -1,4 +1,4 @@
-# PLCnext Technology compatible container runtimes - Docker, Moby, balenaEngine
+~~# PLCnext Technology compatible container runtimes - Docker, Moby, balenaEngine~~
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Web](https://img.shields.io/badge/PLCnext-Website-blue.svg)](https://www.phoenixcontact.com/plcnext)
@@ -6,10 +6,13 @@
 
 ## Project details
 
+**This project and the App are discontinued!!**
+> PLCnext Technology has a preinstalled podman and podman-compose, available as root, for testing purpose only. For productive use, podman and podman-compose will be available rootless for the admin user and for PLCnext Technology app developer starting with firmware 2025.0.
+
 |Description   | Value      |
 |--------------|------------|
 |Created       | 18.02.2020 |
-|Last modified | 19.11.2020 |
+|Last modified | 23.10.2024 |
 |Controller    | AXC F 1152; AXC F 2152; AXC F 3152 |
 |Firmware      | 2021.0 LTS |
 
